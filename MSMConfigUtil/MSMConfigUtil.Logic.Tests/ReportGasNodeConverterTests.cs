@@ -5,9 +5,9 @@ using System;
 namespace MSM.ConfigUtil.Logic.Tests
 {
     [TestFixture]
-    public class ReportGasConverterTests
+    public class ReportGasNodeConverterTests
     {
-        private ReportGasConverter reportGasConverter;
+        private ReportGasNodeConverter reportGasConverter;
         private Mock<IIdConverter> idConverterMock;
         private Mock<IModelDefinitionHelper> modelDefinitionHelperMock;
 
@@ -17,7 +17,7 @@ namespace MSM.ConfigUtil.Logic.Tests
             // Initialize dependencies
             idConverterMock = new Mock<IIdConverter>();
             modelDefinitionHelperMock = new Mock<IModelDefinitionHelper>();
-            reportGasConverter = new ReportGasConverter(idConverterMock.Object, modelDefinitionHelperMock.Object);
+            reportGasConverter = new ReportGasNodeConverter(idConverterMock.Object, modelDefinitionHelperMock.Object);
         }
 
         /*
@@ -34,6 +34,26 @@ namespace MSM.ConfigUtil.Logic.Tests
                 ""unitOfMeasureId"": ""Activity.msdyn_quantityunit""
             }";
          */
+
+        [Test]
+        public void SupportedActionTypes_ReturnsCorrectValue()
+        {
+            // Act
+            var result = reportGasConverter.SupportedActionTypes;
+
+            // Assert
+            Assert.That(result.Count(), Is.EqualTo(1));
+            Assert.That(result.First(), Is.EqualTo("ReportGas"));
+        }
+
+        [Test]
+        public void SupportsAnyNode_ReturnsFalse()
+        {
+            // Act
+            var result = reportGasConverter.SupportsAnyNode;
+            // Assert
+            Assert.That(result, Is.False);
+        }
 
         [Test]
         public void InspectAndConvert_SetsCorrectPropertyValue()

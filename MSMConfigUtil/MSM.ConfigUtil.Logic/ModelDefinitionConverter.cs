@@ -42,7 +42,7 @@ namespace MSM.ConfigUtil.Logic
         private IEnumerable<IModelDefinitionNodeConverter> SelectMatchingConverters(JObject node)
         {
             var nodeType = modelDefinitionHelper.GetActionType(node);
-            return nodeConverters.Where(n => n.SupportedActionTypes.Contains(nodeType, StringComparer.OrdinalIgnoreCase));
+            return nodeConverters.Where(n => n.SupportsAnyNode || n.SupportedActionTypes.Contains(nodeType, StringComparer.OrdinalIgnoreCase));
         }
     }
 }

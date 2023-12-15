@@ -20,7 +20,18 @@ namespace MSM.ConfigUtil.Logic
         public Guid ConvertIdToDestinationEnvironment<TMatchingFieldType>(string logicalTableName, Guid sourceRowId, string fieldToMatchInDestination)
         {
             var valueToMatch = sourceDataverseReader.GetRowValueById<TMatchingFieldType>(logicalTableName, sourceRowId, fieldToMatchInDestination);
-            return destinationDataverseReader.GetRowIdByAlternativeKey(logicalTableName, fieldToMatchInDestination, valueToMatch);
+            return destinationDataverseReader.GetRowIdByKey(logicalTableName, fieldToMatchInDestination, valueToMatch);
+        }
+
+        public Guid ConvertIdToDestinationEnvironment<TMatchingFieldType>(string logicalTableName, Guid sourceRowId, string fieldToMatchInDestination, IEnumerable<KeyValuePair<string,object>> additionalDestinationFilterCriteria)
+        {
+            var valueToMatch = sourceDataverseReader.GetRowValueById<TMatchingFieldType>(logicalTableName, sourceRowId, fieldToMatchInDestination);
+            var destinationFilter = new List<KeyValuePair<string, object>>
+            {
+                new(fieldToMatchInDestination, valueToMatch)
+            };
+            destinationFilter.AddRange(additionalDestinationFilterCriteria);
+            return destinationDataverseReader.GetRowIdByKey(logicalTableName, destinationFilter);
         }
     }
 }

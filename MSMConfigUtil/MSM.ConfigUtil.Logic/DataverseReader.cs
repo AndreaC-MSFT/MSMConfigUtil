@@ -39,11 +39,10 @@ namespace MSM.ConfigUtil.Logic
             }
         }
 
-        public Guid GetRowIdByAlternativeKey<TKeyField>(string logicalTableName, string keyFieldName, TKeyField keyFieldValue)
+        public Guid GetRowIdByKey<TKeyField>(string logicalTableName, string keyFieldName, TKeyField keyFieldValue)
         {
             var request = new RetrieveRequest()
             {
-                //ColumnSet = new ColumnSet("name"),
                 Target = new EntityReference(logicalTableName, keyFieldName, keyFieldValue)
             };
             var response = (RetrieveResponse)organizationService.Execute(request);
@@ -52,6 +51,27 @@ namespace MSM.ConfigUtil.Logic
             return response.Entity.Id;
         }
 
+        public Guid GetRowIdByKey(string logicalTableName, IEnumerable<KeyValuePair<string,object>> keyFieldValueList)
+        {
+            var keyAttributeCollection = new KeyAttributeCollection();
+            keyAttributeCollection.AddRange(keyFieldValueList);
+            var request = new RetrieveRequest()
+            {
+                Target = new EntityReference(logicalTableName, keyAttributeCollection)
+            };
+            var response = (RetrieveResponse)organizationService.Execute(request);
+            if (response == null || response.Entity == null)
+            {
+                string formattedFilter = "(Filter Error)";
+                try
+                {
+                    formattedFilter = string.Join(" AND ", keyFieldValueList.Select(kv => $"{kv.Key} = {kv.Value}"));
+                }
+                catch { }
+                throw new InvalidOperationException($"Cannot find {logicalTableName} row with {formattedFilter}");
+            }
+            return response.Entity.Id;
+        }
 
     }
 }
