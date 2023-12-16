@@ -18,31 +18,33 @@ namespace MSM.ConfigUtil.Logic
             this.nodeConverters = nodeConverters;
             this.modelDefinitionHelper = modelDefinitionHelper;
         }
-        private void Convert()
+        public string Convert(string modeldefinitionJson)
         {
-            
+            var token = JToken.Parse(modeldefinitionJson);
+            ConvertNode(token);
+            return token.ToString();
         }
 
-        public void FindInstances(JToken token)
+        private void ConvertNode(JToken token)
         {
             if (token is JObject node)
             {
                 foreach (var converter in SelectMatchingConverters(node))
                     converter.InspectAndConvert(node);
                 foreach (var property in node.Properties())
-                    FindInstances(property.Value);
+                    ConvertNode(property.Value);
             }
             else if (token is JArray array)
             {
                 foreach (var item in array)
-                    FindInstances(item);
+                    ConvertNode(item);
             }
         }
 
         private IEnumerable<IModelDefinitionNodeConverter> SelectMatchingConverters(JObject node)
         {
             var nodeType = modelDefinitionHelper.GetActionType(node);
-            return nodeConverters.Where(n => n.SupportsAnyNode || n.SupportedActionTypes.Contains(nodeType, StringComparer.OrdinalIgnoreCase));
+            return nodeConverters.Where(n => n.SupportsAnyNode || n.SupportedActionTypes.Contains(nodeType, StringComparer.InvariantCultureIgnoreCase));
         }
     }
 }

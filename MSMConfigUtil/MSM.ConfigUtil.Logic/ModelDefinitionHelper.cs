@@ -11,9 +11,8 @@ namespace MSM.ConfigUtil.Logic
     {
         public string GetActionType(JObject node)
         {
-            return GetPropertyValue(node,"actionType") ?? string.Empty;
+            return GetPropertyValue(node, "actionType") ?? string.Empty;
         }
-
         public string? GetPropertyValue(JObject node, string propertyName)
         {
             return node.Properties().FirstOrDefault(n => n.Name == propertyName)?.Value.ToString();
