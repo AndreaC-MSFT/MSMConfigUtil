@@ -18,7 +18,7 @@ namespace MSM.ConfigUtil.Logic
             return from c in queryProvider.CreateQuery("msdyn_emissioncalculation")
                                   select new CalculationModel()
                                   {
-                                      Id = (string)c.Attributes["msdyn_emissioncalculationid"],
+                                      Id = c.Id.ToString(),
                                       Name = (string)c.Attributes["msdyn_name"],
                                       JsonDefinition = (string)c.Attributes["msdyn_calculationflowjson"]
                                   };

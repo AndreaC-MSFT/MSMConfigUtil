@@ -15,10 +15,12 @@ namespace MSM.ConfigUtil.Logic
     public class DataverseReader
     {
         private readonly IOrganizationService organizationService;
+        private readonly IRetrieveResponseReader retrieveResponseReader;
 
-        public DataverseReader(IOrganizationService organizationService)
+        public DataverseReader(IOrganizationService organizationService, IRetrieveResponseReader retrieveResponseReader)
         {
             this.organizationService = organizationService;
+            this.retrieveResponseReader = retrieveResponseReader;
         }
 
         public T GetRowValueById<T>(string logicalTableName, Guid rowId, string fieldName)
@@ -46,9 +48,10 @@ namespace MSM.ConfigUtil.Logic
                 Target = new EntityReference(logicalTableName, keyFieldName, keyFieldValue)
             };
             var response = (RetrieveResponse)organizationService.Execute(request);
-            if (response == null || response.Entity == null)
+            var responseEntity = retrieveResponseReader.GetEntity(response);
+            if (responseEntity == null)
                 throw new InvalidOperationException($"Cannot find {logicalTableName} row with {keyFieldName} = '{keyFieldValue}'");
-            return response.Entity.Id;
+            return responseEntity.Id;
         }
 
         public Guid GetRowIdByKey(string logicalTableName, IEnumerable<KeyValuePair<string,object>> keyFieldValueList)
@@ -60,7 +63,8 @@ namespace MSM.ConfigUtil.Logic
                 Target = new EntityReference(logicalTableName, keyAttributeCollection)
             };
             var response = (RetrieveResponse)organizationService.Execute(request);
-            if (response == null || response.Entity == null)
+            var responseEntity = retrieveResponseReader.GetEntity(response);
+            if (responseEntity == null)
             {
                 string formattedFilter = "(Filter Error)";
                 try
@@ -70,7 +74,7 @@ namespace MSM.ConfigUtil.Logic
                 catch { }
                 throw new InvalidOperationException($"Cannot find {logicalTableName} row with {formattedFilter}");
             }
-            return response.Entity.Id;
+            return responseEntity.Id;
         }
 
     }
