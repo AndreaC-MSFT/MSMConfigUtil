@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MSM.ConfigUtil.Logic
 {
-    public interface ICalculationModelRepository
+    public interface ICalculationModelReader
     {
         public IEnumerable<CalculationModel> GetAll();
     }

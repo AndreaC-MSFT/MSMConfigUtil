@@ -8,16 +8,16 @@ using Microsoft.Xrm.Sdk;
 namespace MSM.ConfigUtil.Logic.Tests
 {
     [TestFixture]
-    public class CalculationModelRepositoryTests
+    public class CalculationModelReaderTests
     {
-        private CalculationModelRepository calculationModelRepository;
-        private Mock<IQueryProvider> queryProviderMock;
+        private CalculationModelReader calculationModelRepository;
+        private Mock<IDataverseReader> dataverseReaderMock;
 
         [SetUp]
         public void Setup()
         {
-            queryProviderMock = new Mock<IQueryProvider>();
-            calculationModelRepository = new CalculationModelRepository(queryProviderMock.Object);
+            dataverseReaderMock = new Mock<IDataverseReader>();
+            calculationModelRepository = new CalculationModelReader(dataverseReaderMock.Object);
         }
 
         [Test]
@@ -43,7 +43,7 @@ namespace MSM.ConfigUtil.Logic.Tests
                         new ("msdyn_calculationflowjson",expectedResult[1].JsonDefinition)
                     ]}
             };
-            queryProviderMock.Setup(q => q.CreateQuery("msdyn_emissioncalculation"))
+            dataverseReaderMock.Setup(q => q.CreateQuery("msdyn_emissioncalculation"))
                 .Returns(fakeDataContent.AsQueryable());
 
             // Act

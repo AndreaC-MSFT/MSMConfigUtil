@@ -16,11 +16,18 @@ namespace MSM.ConfigUtil.Logic
     {
         private readonly IOrganizationService organizationService;
         private readonly IRetrieveResponseReader retrieveResponseReader;
+        private readonly OrganizationServiceContext organizationServiceContext;
 
         public DataverseReader(IOrganizationService organizationService, IRetrieveResponseReader retrieveResponseReader)
         {
             this.organizationService = organizationService;
             this.retrieveResponseReader = retrieveResponseReader;
+            this.organizationServiceContext = new OrganizationServiceContext(organizationService);
+        }
+
+        public IQueryable<Entity> CreateQuery(string entityLogicalName)
+        {
+            return organizationServiceContext.CreateQuery(entityLogicalName);
         }
 
         public T GetRowValueById<T>(string logicalTableName, Guid rowId, string fieldName)

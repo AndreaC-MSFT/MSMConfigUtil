@@ -30,6 +30,20 @@ namespace MSM.ConfigUtil.Logic.Tests
         }
 
         [Test]
+        public void CreateQuery_ReturnsQueryableEntity()
+        {
+            // Arrange
+            string entityLogicalName = "account";
+
+            // Act
+            var result = dataverseReader.CreateQuery(entityLogicalName);
+
+            // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result, Is.InstanceOf<IQueryable<Entity>>());
+        }
+
+        [Test]
         public void GetRowValueById_Should_Return_Value()
         {
             // Arrange

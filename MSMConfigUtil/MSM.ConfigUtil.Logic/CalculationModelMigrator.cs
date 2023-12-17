@@ -8,17 +8,17 @@ namespace MSM.ConfigUtil.Logic
 {
     public class CalculationModelMigrator
     {
-        private ICalculationModelRepository sourceCalculationModelRepository;
-        private ICalculationModelRepository destinationCalculationModelRepository;
-        public CalculationModelMigrator(ICalculationModelRepository sourceCalculationModelRepository, ICalculationModelRepository destinationCalculationModelRepository)
+        private ICalculationModelReader sourceCalculationModelReader;
+        private ICalculationModelReader destinationCalculationModelReader;
+        public CalculationModelMigrator(ICalculationModelReader sourceCalculationModelReader, ICalculationModelReader destinationCalculationModelReader)
         {
-            this.sourceCalculationModelRepository = sourceCalculationModelRepository;
-            this.destinationCalculationModelRepository = destinationCalculationModelRepository;
+            this.sourceCalculationModelReader = sourceCalculationModelReader;
+            this.destinationCalculationModelReader = destinationCalculationModelReader;
         }
 
         public void Migrate()
         {
-            var sourceModels = sourceCalculationModelRepository.GetAll();
+            var sourceModels = sourceCalculationModelReader.GetAll();
             foreach (var sourceModel in sourceModels) Migrate(sourceModel);
         }
 
