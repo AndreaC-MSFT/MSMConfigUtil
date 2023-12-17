@@ -2,14 +2,16 @@
 using Microsoft.PowerPlatform.Dataverse.Client;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Client;
+using MSMConfigUtil;
+using System.CommandLine;
 
 class Program
 {
     // TODO Enter your Dataverse environment's URL and logon info.
-    static string url = "https://psomsm.crm.dynamics.com/";
+    static string url = "https://org68addb97.crm11.dynamics.com/"; // https://psomsm.crm.dynamics.com/";
     //static string userName = "you@yourorg.onmicrosoft.com";
     //static string password = "yourPassword";
-
+    //AppId = 51f81489-12ee-4a9e-aaae-a2591f45987d;
     // This service connection string uses the info provided above.
     // The AppId and RedirectUri are provided for sample code testing.
     static string connectionString = $@"
@@ -20,8 +22,13 @@ class Program
    LoginPrompt=Auto;
    RequireNewInstance = True";
 
-    static void Main()
+    static async Task Main(string[] args)
     {
+        var rootCommand = new RootCommand();
+        var cliController = new CalculationModelControllerCLI(null);
+        cliController.ConfigureCommands(rootCommand);
+        await rootCommand.InvokeAsync(args);
+        /*
         //ServiceClient implements IOrganizationService interface
         IOrganizationService service = new ServiceClient(connectionString);
 
@@ -48,5 +55,6 @@ class Program
         // Pause the console so it does not close.
         Console.WriteLine("Press the <Enter> key to exit.");
         Console.ReadLine();
+        */
     }
 }
