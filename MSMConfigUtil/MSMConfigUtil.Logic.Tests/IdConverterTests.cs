@@ -39,6 +39,22 @@ namespace MSM.ConfigUtil.Logic.Tests
         }
 
         [Test]
+        public void ConvertIdToDestinationEnvironmentString_Should_ThrowExceptionWhenNoMatch()
+        {
+            // Arrange
+            var logicalTableName = "TableName";
+            var sourceRowId = Guid.NewGuid();
+            var fieldToMatchInDestination = "Field";
+            var valueToMatchAtdestination = "ValueToMatch";
+            Guid? expectedDestinationId = null;
+            sourceDataverseReaderMock.Setup(m => m.GetRowValueById<string>(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<string>())).Returns(valueToMatchAtdestination);
+            destinationDataverseReaderMock.Setup(m => m.GetRowIdByKey(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(expectedDestinationId);
+
+            // Act & Assert
+            Assert.Throws<InvalidOperationException>(() => idConverter.ConvertIdToDestinationEnvironment<string>(logicalTableName, sourceRowId, fieldToMatchInDestination));
+        }
+
+        [Test]
         public void ConvertIdToDestinationEnvironmentString_Should_SearchSourceEnvironmentWithCorrectParameters()
         {
             // Arrange
@@ -159,6 +175,29 @@ namespace MSM.ConfigUtil.Logic.Tests
 
             // Assert
             Assert.That(result, Is.EqualTo(expectedDestinationId));
+        }
+
+        [Test]
+        public void ConvertIdToDestinationEnvironmentString_WithAdditionalFilterCriteria_Should_ThrowexceptionWhenNoMatch()
+        {
+            // Arrange
+            var logicalTableName = "TableName";
+            var sourceRowId = Guid.NewGuid();
+            var fieldToMatchInDestination = "Field";
+
+            var additionalFilterCriteria = new[]
+            {
+                new KeyValuePair<string, object>("FilterField1", "FilterValue1"),
+                new KeyValuePair<string, object>("FilterField2", "FilterValue2")
+            };
+
+            var valueToMatchAtdestination = "ValueToMatch";
+            Guid? expectedDestinationId = null;
+            sourceDataverseReaderMock.Setup(m => m.GetRowValueById<string>(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<string>())).Returns(valueToMatchAtdestination);
+            destinationDataverseReaderMock.Setup(m => m.GetRowIdByKey(It.IsAny<string>(), It.IsAny<IEnumerable<KeyValuePair<string, object>>>())).Returns(expectedDestinationId);
+
+            // Act & Assert
+            Assert.Throws<InvalidOperationException>(() => idConverter.ConvertIdToDestinationEnvironment<string>(logicalTableName, sourceRowId, fieldToMatchInDestination, additionalFilterCriteria));
         }
 
         [Test]

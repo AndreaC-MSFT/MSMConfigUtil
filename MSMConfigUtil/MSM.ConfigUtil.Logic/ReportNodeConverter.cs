@@ -13,15 +13,8 @@ namespace MSM.ConfigUtil.Logic
         private readonly IIdConverter idConverter;
         private readonly IModelDefinitionHelper modelDefinitionHelper;
 
-
         private const string emissionFactorIdJsonPropertyName = "emissionFactorId";
         private const string calculationLibraryIdJsonPropertyName = "calculationLibraryId";
-        private const string calculationLibraryTableName = "msdyn_calculationlibrary";
-        private const string emissionFactorTableName = "msdyn_emissionfactor";
-        private const string calculationLibraryIdFieldName = "msdyn_calculationlibraryid";
-
-
-        private const string nameFieldName = "msdyn_name";
 
         public ReportNodeConverter(IIdConverter idConverter, IModelDefinitionHelper modelDefinitionHelper)
         {
@@ -38,15 +31,15 @@ namespace MSM.ConfigUtil.Logic
             var sourceCalculationLibraryId = modelDefinitionHelper.GetPropertyValue(node, calculationLibraryIdJsonPropertyName);
             if (sourceCalculationLibraryId != null && modelDefinitionHelper.IsGuid(sourceCalculationLibraryId))
             {
-                var destinationCalculationLibraryId = idConverter.ConvertIdToDestinationEnvironment<string>(calculationLibraryTableName, new Guid(sourceCalculationLibraryId), nameFieldName);
+                var destinationCalculationLibraryId = idConverter.ConvertIdToDestinationEnvironment<string>(CalculationModelsConstants.calculationLibraryTableName, new Guid(sourceCalculationLibraryId), CalculationModelsConstants.msdyn_name);
                 modelDefinitionHelper.SetPropertyValue(node, calculationLibraryIdJsonPropertyName, destinationCalculationLibraryId.ToString());
 
                 var sourceEmissionFactorId = modelDefinitionHelper.GetPropertyValue(node, emissionFactorIdJsonPropertyName);
                 if (sourceEmissionFactorId != null && modelDefinitionHelper.IsGuid(sourceEmissionFactorId))
                 {
-                    var destinationEmissionFactorId = idConverter.ConvertIdToDestinationEnvironment<string>(emissionFactorTableName,
-                        new Guid(sourceEmissionFactorId), nameFieldName,
-                        new KeyValuePair<string, object>[] { new(calculationLibraryIdFieldName, destinationCalculationLibraryId) });
+                    var destinationEmissionFactorId = idConverter.ConvertIdToDestinationEnvironment<string>(CalculationModelsConstants.emissionFactorTableName,
+                        new Guid(sourceEmissionFactorId), CalculationModelsConstants.msdyn_name,
+                        new KeyValuePair<string, object>[] { new(CalculationModelsConstants.calculationLibraryIdFieldName, destinationCalculationLibraryId) });
                     modelDefinitionHelper.SetPropertyValue(node, emissionFactorIdJsonPropertyName, destinationEmissionFactorId.ToString());
                 }
             }

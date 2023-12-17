@@ -11,5 +11,6 @@ namespace MSM.ConfigUtil.Logic
         public string Id { get; set; }
         public string Name { get; set; }
         public string JsonDefinition { get; set; }
+        public IEnumerable<KeyValuePair<string, object>> AdditionalAttributes { get; set; }
     }
 }

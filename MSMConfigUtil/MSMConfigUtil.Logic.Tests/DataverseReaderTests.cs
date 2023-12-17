@@ -154,7 +154,7 @@ namespace MSM.ConfigUtil.Logic.Tests
         }
 
         [Test]
-        public void GetRowIdByKey_Should_Throw_Exception_When_Entity_Not_Found()
+        public void GetRowIdByKey_Should_Return_Null_When_Entity_Not_Found()
         {
             // Arrange
             string logicalTableName = "TableName";
@@ -164,8 +164,11 @@ namespace MSM.ConfigUtil.Logic.Tests
             organizationServiceMock.Setup(os => os.Execute(It.IsAny<RetrieveRequest>())).Returns(nullResponse);
             retrieveResponseReaderMock.Setup(m => m.GetEntity(nullResponse)).Returns((Entity)null);
 
-            // Act & Assert
-            Assert.Throws<InvalidOperationException>(() => dataverseReader.GetRowIdByKey(logicalTableName, keyFieldName, keyFieldValue));
+            // Act
+            var result = dataverseReader.GetRowIdByKey(logicalTableName, keyFieldName, keyFieldValue);
+
+            // Assert
+            Assert.That(result, Is.Null);
             retrieveResponseReaderMock.Verify(m => m.GetEntity(nullResponse));
         }
 
@@ -226,7 +229,7 @@ namespace MSM.ConfigUtil.Logic.Tests
         }
 
         [Test]
-        public void GetRowIdByKey_WithkeyFieldValueList_Should_Throw_Exception_When_Entity_Not_Found()
+        public void GetRowIdByKey_WithkeyFieldValueList_Should_Return_Null_When_Entity_Not_Found()
         {
             // Arrange
             string logicalTableName = "TableName";
@@ -241,8 +244,11 @@ namespace MSM.ConfigUtil.Logic.Tests
             organizationServiceMock.Setup(os => os.Execute(It.IsAny<RetrieveRequest>())).Returns(nullResponse);
             retrieveResponseReaderMock.Setup(m => m.GetEntity(nullResponse)).Returns((Entity)null);
 
-            // Act & Assert
-            Assert.Throws<InvalidOperationException>(() => dataverseReader.GetRowIdByKey(logicalTableName, keyFieldValueList));
+            // Act
+            var result = dataverseReader.GetRowIdByKey(logicalTableName, keyFieldValueList);
+
+            // Assert
+            Assert.That(result, Is.Null);
             retrieveResponseReaderMock.Verify(m => m.GetEntity(nullResponse));
         }
 

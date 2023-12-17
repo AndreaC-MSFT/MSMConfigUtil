@@ -8,6 +8,8 @@ namespace MSM.ConfigUtil.Logic
 {
     public interface ICalculationModelReader
     {
-        public IEnumerable<CalculationModel> GetAll();
+        bool Exists(string name);
+        CalculationModel Get(string calculationModelName);
+        IEnumerable<CalculationModel> GetAll();
     }
 }

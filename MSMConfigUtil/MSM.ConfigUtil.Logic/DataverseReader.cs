@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace MSM.ConfigUtil.Logic
 {
-    public class DataverseReader
+    public class DataverseReader : IDataverseReader
     {
         private readonly IOrganizationService organizationService;
         private readonly IRetrieveResponseReader retrieveResponseReader;
@@ -48,7 +48,7 @@ namespace MSM.ConfigUtil.Logic
             }
         }
 
-        public Guid GetRowIdByKey<TKeyField>(string logicalTableName, string keyFieldName, TKeyField keyFieldValue)
+        public Guid? GetRowIdByKey<TKeyField>(string logicalTableName, string keyFieldName, TKeyField keyFieldValue)
         {
             var request = new RetrieveRequest()
             {
@@ -56,12 +56,10 @@ namespace MSM.ConfigUtil.Logic
             };
             var response = (RetrieveResponse)organizationService.Execute(request);
             var responseEntity = retrieveResponseReader.GetEntity(response);
-            if (responseEntity == null)
-                throw new InvalidOperationException($"Cannot find {logicalTableName} row with {keyFieldName} = '{keyFieldValue}'");
-            return responseEntity.Id;
+            return responseEntity?.Id;
         }
 
-        public Guid GetRowIdByKey(string logicalTableName, IEnumerable<KeyValuePair<string,object>> keyFieldValueList)
+        public Guid? GetRowIdByKey(string logicalTableName, IEnumerable<KeyValuePair<string,object>> keyFieldValueList)
         {
             var keyAttributeCollection = new KeyAttributeCollection();
             keyAttributeCollection.AddRange(keyFieldValueList);
@@ -71,17 +69,7 @@ namespace MSM.ConfigUtil.Logic
             };
             var response = (RetrieveResponse)organizationService.Execute(request);
             var responseEntity = retrieveResponseReader.GetEntity(response);
-            if (responseEntity == null)
-            {
-                string formattedFilter = "(Filter Error)";
-                try
-                {
-                    formattedFilter = string.Join(" AND ", keyFieldValueList.Select(kv => $"{kv.Key} = {kv.Value}"));
-                }
-                catch { }
-                throw new InvalidOperationException($"Cannot find {logicalTableName} row with {formattedFilter}");
-            }
-            return responseEntity.Id;
+            return responseEntity?.Id;
         }
 
     }

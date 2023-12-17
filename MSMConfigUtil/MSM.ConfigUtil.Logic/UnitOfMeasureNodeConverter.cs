@@ -15,8 +15,6 @@ namespace MSM.ConfigUtil.Logic
 
 
         private readonly string[] unitOfMeasureJsonProperyNames = [ "unitOfMeasureId", "unit", "unitOfMeasureIdForQuantity" ];
-        private const string unitTableName = "msdyn_unit";
-        private const string nameFieldName = "msdyn_name";
 
         public UnitOfMeasureNodeConverter(IIdConverter idConverter, IModelDefinitionHelper modelDefinitionHelper)
         {
@@ -35,7 +33,7 @@ namespace MSM.ConfigUtil.Logic
                 var sourceUnitId = modelDefinitionHelper.GetPropertyValue(node, unitJsonProperty);
                 if (sourceUnitId != null && modelDefinitionHelper.IsGuid(sourceUnitId))
                 {
-                    var destinationUnitId = idConverter.ConvertIdToDestinationEnvironment<string>(unitTableName, new Guid(sourceUnitId), nameFieldName);
+                    var destinationUnitId = idConverter.ConvertIdToDestinationEnvironment<string>(CalculationModelsConstants.unitTableName, new Guid(sourceUnitId), CalculationModelsConstants.msdyn_name);
                     modelDefinitionHelper.SetPropertyValue(node, unitJsonProperty, destinationUnitId.ToString());
                 }
             }

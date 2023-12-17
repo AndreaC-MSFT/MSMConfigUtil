@@ -20,7 +20,10 @@ namespace MSM.ConfigUtil.Logic
         public Guid ConvertIdToDestinationEnvironment<TMatchingFieldType>(string logicalTableName, Guid sourceRowId, string fieldToMatchInDestination)
         {
             var valueToMatch = sourceDataverseReader.GetRowValueById<TMatchingFieldType>(logicalTableName, sourceRowId, fieldToMatchInDestination);
-            return destinationDataverseReader.GetRowIdByKey(logicalTableName, fieldToMatchInDestination, valueToMatch);
+            var destinationId = destinationDataverseReader.GetRowIdByKey(logicalTableName, fieldToMatchInDestination, valueToMatch);
+            if (!destinationId.HasValue)
+                throw new InvalidOperationException($"Cannot find a matching value for {logicalTableName}.{fieldToMatchInDestination} = '{valueToMatch}' in the destination environment");
+            return destinationId.Value;
         }
 
         public Guid ConvertIdToDestinationEnvironment<TMatchingFieldType>(string logicalTableName, Guid sourceRowId, string fieldToMatchInDestination, IEnumerable<KeyValuePair<string,object>> additionalDestinationFilterCriteria)
@@ -31,7 +34,18 @@ namespace MSM.ConfigUtil.Logic
                 new(fieldToMatchInDestination, valueToMatch)
             };
             destinationFilter.AddRange(additionalDestinationFilterCriteria);
-            return destinationDataverseReader.GetRowIdByKey(logicalTableName, destinationFilter);
+            var destinationId = destinationDataverseReader.GetRowIdByKey(logicalTableName, destinationFilter);
+            if (!destinationId.HasValue)
+            {
+                string formattedFilter = "(Filter Error)";
+                try
+                {
+                    formattedFilter = string.Join(" AND ", destinationFilter.Select(kv => $"{kv.Key} = {kv.Value}"));
+                }
+                catch { }
+                throw new InvalidOperationException($"Cannot find a matching value in destination environment for {logicalTableName} row with {formattedFilter}");
+            }
+            return destinationId.Value;
         }
     }
 }

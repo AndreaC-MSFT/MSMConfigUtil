@@ -15,8 +15,7 @@ namespace MSM.ConfigUtil.Logic
 
 
         private const string greenhouseGasIdJsonPropertyName = "greenhouseGasId";
-        private const string greenhouseGasTableName = "msdyn_greenhousegas";
-        private const string nameFieldName = "msdyn_name";
+
 
         public ReportGasNodeConverter(IIdConverter idConverter, IModelDefinitionHelper modelDefinitionHelper)
         {
@@ -33,7 +32,7 @@ namespace MSM.ConfigUtil.Logic
             var greenhouseGasId = modelDefinitionHelper.GetPropertyValue(node, greenhouseGasIdJsonPropertyName);
             if (greenhouseGasId != null && modelDefinitionHelper.IsGuid(greenhouseGasId))
             {
-                var destinationId = idConverter.ConvertIdToDestinationEnvironment<string>(greenhouseGasTableName, new Guid(greenhouseGasId), nameFieldName);
+                var destinationId = idConverter.ConvertIdToDestinationEnvironment<string>(CalculationModelsConstants.greenhouseGasTableName, new Guid(greenhouseGasId), CalculationModelsConstants.msdyn_name);
                 modelDefinitionHelper.SetPropertyValue(node, greenhouseGasIdJsonPropertyName, destinationId.ToString());
             }
         }
