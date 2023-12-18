@@ -9,6 +9,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.ServiceModel;
 
 namespace MSMConfigUtil.Logic
 {
@@ -52,9 +53,21 @@ namespace MSMConfigUtil.Logic
         {
             var request = new RetrieveRequest()
             {
-                Target = new EntityReference(logicalTableName, keyFieldName, keyFieldValue)
+                Target = new EntityReference(logicalTableName, keyFieldName, keyFieldValue),
+                ColumnSet = new ColumnSet()
             };
-            var response = (RetrieveResponse)organizationService.Execute(request);
+            RetrieveResponse response;
+            try
+            {
+                response = (RetrieveResponse)organizationService.Execute(request);
+            }
+            catch (FaultException<OrganizationServiceFault> ex)
+            {
+                if (ex.Detail?.ErrorCode  == DataverseConstants.ErrorCode_RecordNotFoundByEntityKey)
+                    response = null;
+                else
+                    throw;
+            }
             var responseEntity = retrieveResponseReader.GetEntity(response);
             return responseEntity?.Id;
         }
@@ -65,9 +78,21 @@ namespace MSMConfigUtil.Logic
             keyAttributeCollection.AddRange(keyFieldValueList);
             var request = new RetrieveRequest()
             {
-                Target = new EntityReference(logicalTableName, keyAttributeCollection)
+                Target = new EntityReference(logicalTableName, keyAttributeCollection),
+                ColumnSet = new ColumnSet()
             };
-            var response = (RetrieveResponse)organizationService.Execute(request);
+            RetrieveResponse response;
+            try
+            {
+                response = (RetrieveResponse)organizationService.Execute(request);
+            }
+            catch (FaultException<OrganizationServiceFault> ex)
+            {
+                if (ex.Detail?.ErrorCode == DataverseConstants.ErrorCode_RecordNotFoundByEntityKey)
+                    response = null;
+                else
+                    throw;
+            }
             var responseEntity = retrieveResponseReader.GetEntity(response);
             return responseEntity?.Id;
         }
