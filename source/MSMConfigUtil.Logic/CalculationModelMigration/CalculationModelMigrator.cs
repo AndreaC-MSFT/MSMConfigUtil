@@ -35,11 +35,24 @@ namespace MSMConfigUtil.Logic.CalculationModelMigration
 
         public void Migrate(CalculationModel sourceModel, bool replaceExisting)
         {
-            var existsAtDestination = destinationCalculationModelReader.Exists(sourceModel.Name);
-            if (!existsAtDestination || replaceExisting)
+            var modelIdAtDestination = destinationCalculationModelReader.GetId(sourceModel.Name);
+            if (modelIdAtDestination.HasValue)
+            {
+                if (replaceExisting)
+                {
+                    sourceModel.Id = modelIdAtDestination.Value.ToString();
+                    sourceModel.JsonDefinition = modelDefinitionConverter.Convert(sourceModel.JsonDefinition);
+                    calculationModelWriter.Update(sourceModel);
+                }
+                else
+                {
+                    //write message
+                }
+            }
+            else
             {
                 sourceModel.JsonDefinition = modelDefinitionConverter.Convert(sourceModel.JsonDefinition);
-                calculationModelWriter.Upsert(sourceModel);
+                calculationModelWriter.Create(sourceModel);
             }
         }
     }

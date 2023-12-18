@@ -31,5 +31,31 @@ namespace MSMConfigUtil.Logic.UnitTests
             // Assert
             organizationServiceMock.Verify(x => x.Execute(It.Is<UpsertRequest>(r => r.Target == entity)), Times.Once);
         }
+
+        [Test]
+        public void Create_Should_PassEntityToOrgService()
+        {
+            // Arrange
+            Entity entity = new Entity();
+
+            // Act
+            dataverseWriter.Create(entity);
+
+            // Assert
+            organizationServiceMock.Verify(x => x.Create(entity), Times.Once);
+        }
+
+        [Test]
+        public void Update_Should_PassEntityToOrgService()
+        {
+            // Arrange
+            Entity entity = new Entity();
+
+            // Act
+            dataverseWriter.Update(entity);
+
+            // Assert
+            organizationServiceMock.Verify(x => x.Update(entity), Times.Once);
+        }
     }
 }

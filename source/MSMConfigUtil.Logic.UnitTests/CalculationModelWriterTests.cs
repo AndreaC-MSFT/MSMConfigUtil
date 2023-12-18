@@ -16,16 +16,36 @@ namespace MSMConfigUtil.Logic.UnitTests
     {
         private CalculationModelWriter calculationModelWriter;
         private Mock<IDataverseWriter> dataverseWriterMock;
+        private KeyValuePair<string, object>[] excludedAttributes;
 
         [SetUp]
         public void Setup()
         {
             dataverseWriterMock = new Mock<IDataverseWriter>();
             calculationModelWriter = new CalculationModelWriter(dataverseWriterMock.Object);
+            excludedAttributes =
+                    [
+                        new("createdby", "Value"),
+                        new("createdonbehalfby", "Value"),
+                        new("createdon", "Value"),
+                        new("importsequencenumber", "Value"),
+                        new("modifiedby", "Value"),
+                        new("modifiedonbehalfby", "Value"),
+                        new("modifiedon", "Value"),
+                        new("ownerid", "Value"),
+                        new("owningbusinessunit", "Value"),
+                        new("owningteam", "Value"),
+                        new("owninguser", "Value"),
+                        new("overriddencreatedon", "Value"),
+                        new("statecode", "Value"),
+                        new("statuscode", "Value"),
+                        new("timezoneruleversionnumber", "Value"),
+                        new("utcconversiontimezonecode", "Value")
+                    ];
         }
 
         [Test]
-        public void Upsert_Should_PassEntityWithStandardAttributesToDataverseWriter()
+        public void Create_Should_PassEntityWithStandardAttributesToDataverseWriter()
         {
             // Arrange
             var sourceModel = new CalculationModel()
@@ -43,14 +63,14 @@ namespace MSMConfigUtil.Logic.UnitTests
             };
 
             // Act
-            calculationModelWriter.Upsert(sourceModel);
+            calculationModelWriter.Create(sourceModel);
 
             // Assert
-            dataverseWriterMock.Verify(m => m.Upsert(It.Is<Entity>(e => TestUtils.KeyValuePairListsAreEquivalent(expectedAttributes, e.Attributes))));
+            dataverseWriterMock.Verify(m => m.Create(It.Is<Entity>(e => TestUtils.KeyValuePairListsAreEquivalent(expectedAttributes, e.Attributes))));
         }
 
         [Test]
-        public void Upsert_Should_PassEntityWithAdditionalAttributesToDataverseWriter()
+        public void Create_Should_PassEntityWithAdditionalAttributesToDataverseWriter()
         {
             // Arrange
             var sourceModel = new CalculationModel()
@@ -73,14 +93,14 @@ namespace MSMConfigUtil.Logic.UnitTests
             var expectedAttributes = expectedStandardAttributes.Concat(sourceModel.AdditionalAttributes);
 
             // Act
-            calculationModelWriter.Upsert(sourceModel);
+            calculationModelWriter.Create(sourceModel);
 
             // Assert
-            dataverseWriterMock.Verify(m => m.Upsert(It.Is<Entity>(e => TestUtils.KeyValuePairListsAreEquivalent(expectedAttributes, e.Attributes))));
+            dataverseWriterMock.Verify(m => m.Create(It.Is<Entity>(e => TestUtils.KeyValuePairListsAreEquivalent(expectedAttributes, e.Attributes))));
         }
 
         [Test]
-        public void Upsert_Should_NotPassSourceModelIdToDataverseWriter()
+        public void Create_Should_NotPassSourceModelIdToDataverseWriter()
         {
             // Arrange
             var sourceModel = new CalculationModel()
@@ -92,14 +112,65 @@ namespace MSMConfigUtil.Logic.UnitTests
             };
 
             // Act
-            calculationModelWriter.Upsert(sourceModel);
+            calculationModelWriter.Create(sourceModel);
 
             // Assert
-            dataverseWriterMock.Verify(m => m.Upsert(It.Is<Entity>(e => !e.Attributes.Any(a => a.Value.ToString() == sourceModel.Id))));
+            dataverseWriterMock.Verify(m => m.Create(It.Is<Entity>(e => !e.Attributes.Any(a => a.Value.ToString() == sourceModel.Id))));
         }
 
         [Test]
-        public void Upsert_Should_NotPassExcludedAttributesToDataverseWriter()
+        public void Create_Should_NotPassExcludedAttributesToDataverseWriter()
+        {
+            // Arrange
+            var sourceModel = new CalculationModel()
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = "My model name",
+                JsonDefinition = "Json definition",
+                AdditionalAttributes = excludedAttributes
+            };
+
+            // Act
+            calculationModelWriter.Create(sourceModel);
+
+            // Assert
+            dataverseWriterMock.Verify(m => m.Create(It.Is<Entity>(e => 
+                !e.Attributes.Any(a =>
+                    sourceModel.AdditionalAttributes.Any(aa =>
+                        aa.Key == a.Key)))));
+
+        }
+
+
+
+
+        [Test]
+        public void Update_Should_PassEntityWithStandardAttributesToDataverseWriter()
+        {
+            // Arrange
+            var sourceModel = new CalculationModel()
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = "My model name",
+                JsonDefinition = "Json definition",
+                AdditionalAttributes = new KeyValuePair<string, object>[0]
+            };
+
+            var expectedAttributes = new KeyValuePair<string, object>[]
+            {
+                new("msdyn_name", sourceModel.Name),
+                new("msdyn_calculationflowjson", sourceModel.JsonDefinition)
+            };
+
+            // Act
+            calculationModelWriter.Update(sourceModel);
+
+            // Assert
+            dataverseWriterMock.Verify(m => m.Update(It.Is<Entity>(e => TestUtils.KeyValuePairListsAreEquivalent(expectedAttributes, e.Attributes))));
+        }
+
+        [Test]
+        public void Update_Should_PassEntityWithAdditionalAttributesToDataverseWriter()
         {
             // Arrange
             var sourceModel = new CalculationModel()
@@ -109,30 +180,61 @@ namespace MSMConfigUtil.Logic.UnitTests
                 JsonDefinition = "Json definition",
                 AdditionalAttributes = new KeyValuePair<string, object>[]
                     {
-                        new("createdby", "Value"),
-                        new("createdonbehalfby", "Value"),
-                        new("createdon", "Value"),
-                        new("importsequencenumber", "Value"),
-                        new("modifiedby", "Value"),
-                        new("modifiedonbehalfby", "Value"),
-                        new("modifiedon", "Value"),
-                        new("ownerid", "Value"),
-                        new("owningbusinessunit", "Value"),
-                        new("owningteam", "Value"),
-                        new("owninguser", "Value"),
-                        new("overriddencreatedon", "Value"),
-                        new("statecode", "Value"),
-                        new("statuscode", "Value"),
-                        new("timezoneruleversionnumber", "Value"),
-                        new("utcconversiontimezonecode", "Value")
+                        new("AdditionalAttribute1", "Value1"),
+                        new("AdditionalAttribute2", "Value2")
                     }
             };
 
+            var expectedStandardAttributes = new KeyValuePair<string, object>[]
+            {
+                new("msdyn_name", sourceModel.Name),
+                new("msdyn_calculationflowjson", sourceModel.JsonDefinition)
+            };
+            var expectedAttributes = expectedStandardAttributes.Concat(sourceModel.AdditionalAttributes);
+
             // Act
-            calculationModelWriter.Upsert(sourceModel);
+            calculationModelWriter.Update(sourceModel);
 
             // Assert
-            dataverseWriterMock.Verify(m => m.Upsert(It.Is<Entity>(e => 
+            dataverseWriterMock.Verify(m => m.Update(It.Is<Entity>(e => TestUtils.KeyValuePairListsAreEquivalent(expectedAttributes, e.Attributes))));
+        }
+
+        [Test]
+        public void Update_Should_PassSourceModelIdToDataverseWriter()
+        {
+            // Arrange
+            var sourceModel = new CalculationModel()
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = "My model name",
+                JsonDefinition = "Json definition",
+                AdditionalAttributes = new KeyValuePair<string, object>[0]
+            };
+
+            // Act
+            calculationModelWriter.Update(sourceModel);
+
+            // Assert
+            dataverseWriterMock.Verify(m => m.Update(It.Is<Entity>(e => e.Id.ToString() == sourceModel.Id)));
+        }
+
+        [Test]
+        public void Update_Should_NotPassExcludedAttributesToDataverseWriter()
+        {
+            // Arrange
+            var sourceModel = new CalculationModel()
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = "My model name",
+                JsonDefinition = "Json definition",
+                AdditionalAttributes = excludedAttributes
+            };
+
+            // Act
+            calculationModelWriter.Update(sourceModel);
+
+            // Assert
+            dataverseWriterMock.Verify(m => m.Update(It.Is<Entity>(e =>
                 !e.Attributes.Any(a =>
                     sourceModel.AdditionalAttributes.Any(aa =>
                         aa.Key == a.Key)))));

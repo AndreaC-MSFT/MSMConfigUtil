@@ -42,8 +42,8 @@ namespace MSMConfigUtil.Logic.UnitTests
             calculationModelMigrator.Migrate(true);
 
             // Assert
-            destinationCalculationModelReaderMock.Verify(m => m.Exists("Model 1"), Times.Once);
-            destinationCalculationModelReaderMock.Verify(m => m.Exists("Model 2"), Times.Once);
+            destinationCalculationModelReaderMock.Verify(m => m.GetId("Model 1"), Times.Once);
+            destinationCalculationModelReaderMock.Verify(m => m.GetId("Model 2"), Times.Once);
         }
 
         [Test]
@@ -61,48 +61,65 @@ namespace MSMConfigUtil.Logic.UnitTests
         }
 
         [Test]
-        public void Migrate_ByModel_Should_UpsertWhenModelDoesNotExists()
+        public void Migrate_ByModel_Should_CreateWhenModelDoesNotExists()
         {
             // Arrange
             var sourceModel = new CalculationModel { Name = "Model 1" };
-            destinationCalculationModelReaderMock.Setup(m => m.Exists(It.IsAny<string>())).Returns(false);
+            destinationCalculationModelReaderMock.Setup(m => m.GetId(It.IsAny<string>())).Returns((Guid?)null);
             modelDefinitionConverterMock.Setup(m => m.Convert(It.IsAny<string>())).Returns("ConvertedJson");
 
             // Act
             calculationModelMigrator.Migrate(sourceModel, false);
 
             // Assert
-            calculationModelWriterMock.Verify(r => r.Upsert(sourceModel));
+            calculationModelWriterMock.Verify(r => r.Create(sourceModel));
         }
 
         [Test]
-        public void Migrate_ByModel_Should_UpsertWhenModelExistsAndReplaceParameterIsTrue()
+        public void Migrate_ByModel_Should_UpdateWhenModelExistsAndReplaceParameterIsTrue()
         {
             // Arrange
             var sourceModel = new CalculationModel { Name = "Model 1" };
-            destinationCalculationModelReaderMock.Setup(m => m.Exists(It.IsAny<string>())).Returns(true);
+            destinationCalculationModelReaderMock.Setup(m => m.GetId(It.IsAny<string>())).Returns(Guid.NewGuid());
             modelDefinitionConverterMock.Setup(m => m.Convert(It.IsAny<string>())).Returns("ConvertedJson");
 
             // Act
             calculationModelMigrator.Migrate(sourceModel, true);
 
             // Assert
-            calculationModelWriterMock.Verify(r => r.Upsert(sourceModel));
+            calculationModelWriterMock.Verify(r => r.Update(sourceModel));
         }
 
         [Test]
-        public void Migrate_ByModel_Should_NotUpsertWhenModelExistsAndReplaceParameterIsFalse()
+        public void Migrate_ByModel_Should_PassDestinationIdToUpdate()
+        {
+            // Arrange
+            var sourceModel = new CalculationModel { Id = Guid.NewGuid().ToString(), Name = "Model 1" };
+            var destinationId = Guid.NewGuid();
+            destinationCalculationModelReaderMock.Setup(m => m.GetId(It.IsAny<string>())).Returns(destinationId);
+            modelDefinitionConverterMock.Setup(m => m.Convert(It.IsAny<string>())).Returns("ConvertedJson");
+
+            // Act
+            calculationModelMigrator.Migrate(sourceModel, true);
+
+            // Assert
+            calculationModelWriterMock.Verify(r => r.Update(It.Is<CalculationModel>(m => m.Id == destinationId.ToString())));
+        }
+
+        [Test]
+        public void Migrate_ByModel_Should_NotUpdateWhenModelExistsAndReplaceParameterIsFalse()
         {
             // Arrange
             var sourceModel = new CalculationModel { Name = "Model 1" };
-            destinationCalculationModelReaderMock.Setup(m => m.Exists(It.IsAny<string>())).Returns(true);
+            var destinationId = Guid.NewGuid();
+            destinationCalculationModelReaderMock.Setup(m => m.GetId(It.IsAny<string>())).Returns(destinationId);
             modelDefinitionConverterMock.Setup(m => m.Convert(It.IsAny<string>())).Returns("ConvertedJson");
 
             // Act
             calculationModelMigrator.Migrate(sourceModel, false);
 
             // Assert
-            calculationModelWriterMock.Verify(r => r.Upsert(It.IsAny<CalculationModel>()), Times.Never);
+            calculationModelWriterMock.Verify(r => r.Update(It.IsAny<CalculationModel>()), Times.Never);
         }
 
         [Test]
@@ -110,14 +127,14 @@ namespace MSMConfigUtil.Logic.UnitTests
         {
             // Arrange
             var sourceModel = new CalculationModel { Name = "Model 1" };
-            destinationCalculationModelReaderMock.Setup(m => m.Exists(It.IsAny<string>())).Returns(false);
+            destinationCalculationModelReaderMock.Setup(m => m.GetId(It.IsAny<string>())).Returns((Guid?)null);
             modelDefinitionConverterMock.Setup(m => m.Convert(It.IsAny<string>())).Returns("ConvertedJson");
 
             // Act
             calculationModelMigrator.Migrate(sourceModel, false);
 
             // Assert
-            calculationModelWriterMock.Verify(r => r.Upsert(It.Is<CalculationModel>(c => c.JsonDefinition == "ConvertedJson")));
+            calculationModelWriterMock.Verify(r => r.Create(It.Is<CalculationModel>(c => c.JsonDefinition == "ConvertedJson")));
         }
 
         [Test]
@@ -125,14 +142,14 @@ namespace MSMConfigUtil.Logic.UnitTests
         {
             // Arrange
             var sourceModel = new CalculationModel { Name = "Model 1" };
-            destinationCalculationModelReaderMock.Setup(m => m.Exists(It.IsAny<string>())).Returns(false);
+            destinationCalculationModelReaderMock.Setup(m => m.GetId(It.IsAny<string>())).Returns((Guid?)null);
             modelDefinitionConverterMock.Setup(m => m.Convert(It.IsAny<string>())).Returns("ConvertedJson");
 
             // Act
             calculationModelMigrator.Migrate(sourceModel, false);
 
             // Assert
-            destinationCalculationModelReaderMock.Verify(m => m.Exists("Model 1"));
+            destinationCalculationModelReaderMock.Verify(m => m.GetId("Model 1"));
         }
     }
 }

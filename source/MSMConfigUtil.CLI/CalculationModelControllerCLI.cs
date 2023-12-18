@@ -17,13 +17,13 @@ namespace MSMConfigUtil.CLI
         public void ConfigureCommands(RootCommand rootCommand)
         {
             var sourceUriOption = new Option<Uri>(
-                aliases: ["--source-environment-uri", "--source-uri", "--s"],
+                aliases: ["--source-environment-uri", "--source-uri", "-s"],
                 description: "The Dataverse URI of the source environment")
             { IsRequired = true };
             rootCommand.AddGlobalOption(sourceUriOption);
 
             var destinationuriOption = new Option<Uri>(
-                    aliases: ["--destination-environment-uri", "--destination-uri", "--d"],
+                    aliases: ["--destination-environment-uri", "--destination-uri", "-d"],
                     description: "The Dataverse URI of the destination environment")
             { IsRequired = true };
             rootCommand.AddGlobalOption(destinationuriOption);
@@ -43,7 +43,7 @@ namespace MSMConfigUtil.CLI
 
             var migrateCalculationModelCommand = new Command("migrate-calculation-models", "Copies one or more calculation models from the source environment to the destination environment");
             var calculationModelNameOption = new Option<string?>(
-                aliases: ["--calculation-model-name", "--name", "--n"],
+                aliases: ["--calculation-model-name", "--name", "-n"],
                 description: "The name of the calculation model");
             migrateCalculationModelCommand.AddOption(calculationModelNameOption);
 

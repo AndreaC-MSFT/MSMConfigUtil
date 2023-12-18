@@ -8,7 +8,7 @@ namespace MSMConfigUtil.Logic.CalculationModelMigration
 {
     public interface ICalculationModelReader
     {
-        bool Exists(string name);
+        Guid? GetId(string name);
         CalculationModel Get(string calculationModelName);
         IEnumerable<CalculationModel> GetAll();
     }

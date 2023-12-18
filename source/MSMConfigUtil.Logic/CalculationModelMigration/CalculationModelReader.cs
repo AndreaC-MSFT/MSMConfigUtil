@@ -27,11 +27,9 @@ namespace MSMConfigUtil.Logic.CalculationModelMigration
                    select GetCalculationModelFromEntity(c);
         }
 
-
-        public bool Exists(string name)
+        public Guid? GetId(string name)
         {
-            var id = dataverseReader.GetRowIdByKey(CalculationModelsConstants.msdyn_emissioncalculation, CalculationModelsConstants.msdyn_name, name);
-            return id.HasValue;
+            return dataverseReader.GetRowIdByKey(CalculationModelsConstants.msdyn_emissioncalculation, CalculationModelsConstants.msdyn_name, name);
         }
 
         public CalculationModel Get(string calculationModelName)

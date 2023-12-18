@@ -20,5 +20,15 @@ namespace MSMConfigUtil.Logic
             };
             organizationService.Execute(request);
         }
+
+        public void Create(Entity entity)
+        {
+            organizationService.Create(entity);
+        }
+
+        public void Update(Entity entity)
+        {
+            organizationService.Update(entity);
+        }
     }
 }

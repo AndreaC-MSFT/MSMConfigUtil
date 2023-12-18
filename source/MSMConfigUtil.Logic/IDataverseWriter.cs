@@ -4,6 +4,9 @@ namespace MSMConfigUtil.Logic
 {
     public interface IDataverseWriter
     {
-        public void Upsert(Entity entity);
+        void Upsert(Entity entity);
+        void Create(Entity entity);
+        void Update(Entity entity);
+
     }
 }

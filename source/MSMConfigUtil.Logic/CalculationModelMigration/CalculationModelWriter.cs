@@ -17,13 +17,25 @@ namespace MSMConfigUtil.Logic.CalculationModelMigration
             this.dataverseWriter = dataverseWriter;
         }
 
-        public void Upsert(CalculationModel modelToWrite)
+        public void Create(CalculationModel modelToWrite)
+        {
+            Entity entity = CreateEntityFromModel(modelToWrite);
+            dataverseWriter.Create(entity);
+        }
+        public void Update(CalculationModel modelToWrite)
+        {
+            Entity entity = CreateEntityFromModel(modelToWrite);
+            entity.Id = new Guid(modelToWrite.Id);
+            dataverseWriter.Update(entity);
+        }
+
+        private Entity CreateEntityFromModel(CalculationModel modelToWrite)
         {
             var entity = new Entity(CalculationModelsConstants.msdyn_emissioncalculation);
             entity[CalculationModelsConstants.msdyn_name] = modelToWrite.Name;
             entity[CalculationModelsConstants.msdyn_calculationflowjson] = modelToWrite.JsonDefinition;
             entity.Attributes.AddRange(modelToWrite.AdditionalAttributes.Where(a => !DataverseConstants.fieldsToExclude.Contains(a.Key)));
-            dataverseWriter.Upsert(entity);
+            return entity;
         }
     }
 }

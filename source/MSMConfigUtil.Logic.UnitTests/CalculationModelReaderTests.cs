@@ -187,53 +187,6 @@ namespace MSMConfigUtil.Logic.UnitTests
         }
 
 
-
-
-        [Test]
-        public void Exists_Should_ReturnsTrue_WhenNameExists()
-        {
-            // Arrange
-            string name = "exampleName";
-            dataverseReaderMock.Setup(m => m.GetRowIdByKey<string>(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Returns(Guid.NewGuid());
-
-            // Act
-            bool result = calculationModelReader.Exists(name);
-
-            // Assert
-            Assert.That(result, Is.True);
-        }
-
-        [Test]
-        public void Exists_Should_ReturnsFalse_WhenNameDoesNotExist()
-        {
-            // Arrange
-            string name = "exampleName";
-            dataverseReaderMock.Setup(m => m.GetRowIdByKey<string>(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Returns((Guid?)null);
-
-            // Act
-            bool result = calculationModelReader.Exists(name);
-
-            // Assert
-            Assert.IsFalse(result);
-        }
-
-        [Test]
-        public void Exists_Should_PassCorrectParametersToDataverseReader()
-        {
-            // Arrange
-            string name = "exampleName";
-            dataverseReaderMock.Setup(m => m.GetRowIdByKey<string>(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Returns(Guid.NewGuid());
-
-            // Act
-            bool result = calculationModelReader.Exists(name);
-
-            // Assert
-            dataverseReaderMock.Verify(m => m.GetRowIdByKey<string>("msdyn_emissioncalculation", "msdyn_name", name));
-        }
-
         [Test]
         public void Get_Should_NotReturnNonCustomCalculationModels()
         {
@@ -274,6 +227,53 @@ namespace MSMConfigUtil.Logic.UnitTests
             // Assert
             Assert.That(result, Is.Null);
         }
+
+        [Test]
+        public void GetId_Should_ReturnId_WhenNameExists()
+        {
+            // Arrange
+            string name = "exampleName";
+            var expectedId = Guid.NewGuid();
+            dataverseReaderMock.Setup(m => m.GetRowIdByKey<string>(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(expectedId);
+
+            // Act
+            var result = calculationModelReader.GetId(name);
+
+            // Assert
+            Assert.That(result, Is.EqualTo(expectedId));
+        }
+
+        [Test]
+        public void GetId_Should_ReturnNull_WhenNameDoesNotExist()
+        {
+            // Arrange
+            string name = "exampleName";
+            dataverseReaderMock.Setup(m => m.GetRowIdByKey<string>(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .Returns((Guid?)null);
+
+            // Act
+            var result = calculationModelReader.GetId(name);
+
+            // Assert
+            Assert.That(result, Is.Null);
+        }
+
+        [Test]
+        public void GetId_Should_PassCorrectParametersToDataverseReader()
+        {
+            // Arrange
+            string name = "exampleName";
+            dataverseReaderMock.Setup(m => m.GetRowIdByKey<string>(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(Guid.NewGuid());
+
+            // Act
+            var result = calculationModelReader.GetId(name);
+
+            // Assert
+            dataverseReaderMock.Verify(m => m.GetRowIdByKey<string>("msdyn_emissioncalculation", "msdyn_name", name));
+        }
+
 
         [Test]
         public void Get_Should_ReturnModelSelectedByName()

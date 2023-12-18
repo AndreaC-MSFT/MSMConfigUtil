@@ -8,6 +8,7 @@ namespace MSMConfigUtil.Logic.CalculationModelMigration
 {
     public interface ICalculationModelWriter
     {
-        void Upsert(CalculationModel modelToWrite);
+        void Create(CalculationModel modelToWrite);
+        void Update(CalculationModel modelToWrite);
     }
 }
