@@ -11,8 +11,8 @@ namespace MSMConfigUtil.CLI
 {
     public class GlobalCLIOptions
     {
-        public Uri sourceUri {  get; set; }
-        public Uri destinationUri { get; set; }
+        public Uri SourceUri {  get; set; }
+        public Uri DestinationUri { get; set; }
         public AuthTypes AuthType {  get; set; }
         public string? ClientId { get; set; }
         public SecureString? ClientSecret { get; set; }
@@ -41,8 +41,8 @@ namespace MSMConfigUtil.CLI
                 AuthType = bindingContext.ParseResult.GetValueForOption(authTypeOption),
                 ClientId = bindingContext.ParseResult.GetValueForOption(clientIdOption),
                 ClientSecret = bindingContext.ParseResult.GetValueForOption(clientSecretOption),
-                destinationUri = bindingContext.ParseResult.GetValueForOption(destinationUriOption),
-                sourceUri = bindingContext.ParseResult.GetValueForOption(sourceUriOption)
+                DestinationUri = bindingContext.ParseResult.GetValueForOption(destinationUriOption),
+                SourceUri = bindingContext.ParseResult.GetValueForOption(sourceUriOption)
             };
         }
     }

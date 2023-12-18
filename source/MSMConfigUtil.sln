@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MSMConfigUtil.CLI", "MSMCon
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MSMConfigUtil.Logic.UnitTests", "MSMConfigUtil.Logic.UnitTests\MSMConfigUtil.Logic.UnitTests.csproj", "{86798ACC-8C4A-452F-AF5C-B1E801108410}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSMConfigUtil.CLI.UnitTests", "MSMConfigUtil.CLI.UnitTests\MSMConfigUtil.CLI.UnitTests.csproj", "{051DFAFD-FA7F-422B-B130-62C245E51C73}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{86798ACC-8C4A-452F-AF5C-B1E801108410}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{86798ACC-8C4A-452F-AF5C-B1E801108410}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{86798ACC-8C4A-452F-AF5C-B1E801108410}.Release|Any CPU.Build.0 = Release|Any CPU
+		{051DFAFD-FA7F-422B-B130-62C245E51C73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{051DFAFD-FA7F-422B-B130-62C245E51C73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{051DFAFD-FA7F-422B-B130-62C245E51C73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{051DFAFD-FA7F-422B-B130-62C245E51C73}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

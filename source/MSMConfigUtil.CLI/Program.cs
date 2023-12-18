@@ -29,7 +29,8 @@ namespace MSMConfigUtil.CLI
         static async Task Main(string[] args)
         {
             //DI Resolution
-            var organizationServiceFactory = new OrganizationServiceFromCLIOptionsFactory();
+            var connectionOptionsFactory = new ConnectionOptionsFactory();
+            var organizationServiceFactory = new OrganizationServiceFromCLIOptionsFactory(connectionOptionsFactory);
             var retrieveResponseReader = new RetrieveResponseReader();
             var nodeConverterCollectionFactory = new NodeConverterCollectionFactory();
             var modelDefinitionHelper = new ModelDefinitionHelper();
