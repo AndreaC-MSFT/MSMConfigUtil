@@ -14,4 +14,8 @@
     <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MSM.ConfigUtil.Logic\MSM.ConfigUtil.Logic.csproj" />
+  </ItemGroup>
+
 </Project>

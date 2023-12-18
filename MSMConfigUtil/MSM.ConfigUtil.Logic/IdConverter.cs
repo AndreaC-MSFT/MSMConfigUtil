@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MSM.ConfigUtil.Logic
 {
-    public class IdConverter
+    public class IdConverter : IIdConverter
     {
         private readonly IDataverseReader sourceDataverseReader;
         private readonly IDataverseReader destinationDataverseReader;

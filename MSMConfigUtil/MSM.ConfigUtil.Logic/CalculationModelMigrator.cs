@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MSM.ConfigUtil.Logic
 {
-    public class CalculationModelMigrator
+    public class CalculationModelMigrator : ICalculationModelMigrator
     {
         private ICalculationModelReader sourceCalculationModelReader;
         private ICalculationModelReader destinationCalculationModelReader;

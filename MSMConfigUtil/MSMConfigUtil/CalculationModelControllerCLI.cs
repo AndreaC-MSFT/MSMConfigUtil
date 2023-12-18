@@ -7,9 +7,9 @@ namespace MSMConfigUtil
 {
     internal class CalculationModelControllerCLI
     {
-        private CalculationModelController _controller;
+        private ICalculationModelController _controller;
 
-        public CalculationModelControllerCLI(CalculationModelController controller)
+        public CalculationModelControllerCLI(ICalculationModelController controller)
         {
             _controller = controller;
         }
@@ -35,14 +35,14 @@ namespace MSMConfigUtil
             { IsRequired = true };
             rootCommand.AddGlobalOption(authTypeOption);
 
-            var clientIdOption = new Option<string>("--client-id", "The OAuth client ID (or App registration Id). Only used whith --auth-type ClientIdAndSecret.");
+            var clientIdOption = new Option<string?>("--client-id", "The OAuth client ID (or App registration Id). Only used whith --auth-type ClientIdAndSecret.");
             rootCommand.AddGlobalOption(clientIdOption);
 
-            var clientSecretOption = new Option<SecureString>("--client-secret", "The client secret. Only used whith --auth-type ClientIdAndSecret.");
+            var clientSecretOption = new Option<SecureString?>("--client-secret", "The client secret. Only used whith --auth-type ClientIdAndSecret.");
             rootCommand.AddGlobalOption(clientSecretOption);
 
             var migrateCalculationModelCommand = new Command("migrate-calculation-models", "Copies one or more calculation models from the source environment to the destination environment");
-            var calculationModelNameOption = new Option<string>(
+            var calculationModelNameOption = new Option<string?>(
                 aliases: ["--calculation-model-name", "--name", "--n"],
                 description: "The name of the calculation model");
             migrateCalculationModelCommand.AddOption(calculationModelNameOption);
@@ -59,24 +59,11 @@ namespace MSMConfigUtil
             { IsRequired = true };
             migrateCalculationModelCommand.AddOption(replaceExistingOption);
 
-            migrateCalculationModelCommand.SetHandler((globalOptions, migrateModelsOptions) =>
-            {
-                Console.WriteLine(globalOptions.AuthType);
-            },
-            new GlobalCLIOptionsBinder(sourceUriOption, destinationuriOption, authTypeOption, clientIdOption, clientSecretOption),
-            new MigrateModelsCLIOptionsBinder(calculationModelNameOption, migrateAllOption, replaceExistingOption));
+            migrateCalculationModelCommand.SetHandler(_controller.MigrateCalculationModel,
+                new GlobalCLIOptionsBinder(sourceUriOption, destinationuriOption, authTypeOption, clientIdOption, clientSecretOption),
+                new MigrateModelsCLIOptionsBinder(calculationModelNameOption, migrateAllOption, replaceExistingOption));
 
             rootCommand.AddCommand(migrateCalculationModelCommand);
-        }
-
-        private void MigrateCalculationModel(string calculationModelName, bool replaceIfExisting, Uri sourceEnvironmentUri, Uri destinationEnvironmentUri, AuthTypes authType, string clientId, SecureString clientSecret)
-        {
-            _controller.MigrateCalculationModel(calculationModelName, replaceIfExisting, sourceEnvironmentUri, destinationEnvironmentUri, authType, clientId, clientSecret);
-        }
-
-        private void MigrateCalculationModelAll(bool replaceIfExisting, Uri sourceEnvironmentUri, Uri destinationEnvironmentUri, AuthTypes authType, string clientId, SecureString clientSecret)
-        {
-            _controller.MigrateCalculationModelAll(replaceIfExisting, sourceEnvironmentUri, destinationEnvironmentUri, authType, clientId, clientSecret);
         }
     }
 }

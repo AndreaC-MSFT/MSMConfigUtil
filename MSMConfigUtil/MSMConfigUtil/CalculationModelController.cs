@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.Xrm.Sdk;
+using MSM.ConfigUtil.Logic;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security;
@@ -7,12 +9,26 @@ using System.Threading.Tasks;
 
 namespace MSMConfigUtil
 {
-    internal class CalculationModelController
+    public class CalculationModelController : ICalculationModelController
     {
-        public void MigrateCalculationModel(string calculationModelName, bool replaceIfExisting, Uri sourceEnvironmentUri, Uri destinationEnvironmentUri, AuthTypes authType, string clientId, SecureString clientSecret)
-        { }
-        public void MigrateCalculationModelAll(bool replaceIfExisting, Uri sourceEnvironmentUri, Uri destinationEnvironmentUri, AuthTypes authType, string clientId, SecureString clientSecret)
-        { }
+        private readonly ICalculationModelMigratorFactory calcModelMigratorFactory;
+        public CalculationModelController(ICalculationModelMigratorFactory calcModelMigratorFactory)
+        {
+            this.calcModelMigratorFactory = calcModelMigratorFactory;
+        }
+        public void MigrateCalculationModel(GlobalCLIOptions globalOptions, MigrateModelsCLIOptions migrateModelsOptions)
+        {
+            var calcModelMigrator = calcModelMigratorFactory.Create(globalOptions);
+            if (migrateModelsOptions.MigrateAllModels)
+                calcModelMigrator.Migrate(migrateModelsOptions.ReplaceExistingModels);
+            else
+            {
+                if (string.IsNullOrEmpty(migrateModelsOptions.CalculationModelName))
+                    throw new ArgumentException("Please specify either --calculation-model-name or --all");
+                else
+                    calcModelMigrator.Migrate(migrateModelsOptions.CalculationModelName, migrateModelsOptions.ReplaceExistingModels);
+            }
+        }
 
     }
 }

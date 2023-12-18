@@ -9,7 +9,7 @@ using System.Xml.Linq;
 
 namespace MSM.ConfigUtil.Logic
 {
-    public class ModelDefinitionConverter
+    public class ModelDefinitionConverter : IModelDefinitionConverter
     {
         private readonly IEnumerable<IModelDefinitionNodeConverter> nodeConverters;
         private readonly IModelDefinitionHelper modelDefinitionHelper;

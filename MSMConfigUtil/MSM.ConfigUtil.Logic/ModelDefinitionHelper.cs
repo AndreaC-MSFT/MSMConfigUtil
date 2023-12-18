@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MSM.ConfigUtil.Logic
 {
-    public class ModelDefinitionHelper
+    public class ModelDefinitionHelper : IModelDefinitionHelper
     {
         public string GetActionType(JObject node)
         {
