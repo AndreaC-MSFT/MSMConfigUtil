@@ -6,7 +6,18 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AssemblyName>MSMConfigUtil</AssemblyName>
+    <PublishAot>False</PublishAot>
   </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>portable</DebugType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+	  <DebugType>none</DebugType>
+	  <DebugSymbols>false</DebugSymbols>
+  </PropertyGroup>
+
 
   <ItemGroup>
     <PackageReference Include="Microsoft.PowerPlatform.Dataverse.Client" Version="1.1.16" />

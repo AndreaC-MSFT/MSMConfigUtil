@@ -29,13 +29,14 @@ namespace MSMConfigUtil.CLI
         static async Task Main(string[] args)
         {
             //DI Resolution
+            var uiHandler = new ConsoleUIHandler();
             var connectionOptionsFactory = new ConnectionOptionsFactory();
-            var organizationServiceFactory = new OrganizationServiceFromCLIOptionsFactory(connectionOptionsFactory);
+            var organizationServiceFactory = new OrganizationServiceFromCLIOptionsFactory(connectionOptionsFactory, uiHandler);
             var retrieveResponseReader = new RetrieveResponseReader();
             var nodeConverterCollectionFactory = new NodeConverterCollectionFactory();
             var modelDefinitionHelper = new ModelDefinitionHelper();
-            var calcModelMigratorFactory = new CalculationModelMigratorFactory(organizationServiceFactory, retrieveResponseReader, nodeConverterCollectionFactory, modelDefinitionHelper);
-            var calculationModelController = new CalculationModelController(calcModelMigratorFactory);
+            var calcModelMigratorFactory = new CalculationModelMigratorFactory(organizationServiceFactory, retrieveResponseReader, nodeConverterCollectionFactory, modelDefinitionHelper, uiHandler);
+            var calculationModelController = new CalculationModelController(calcModelMigratorFactory, uiHandler);
 
             //Configure and run CLI
             var rootCommand = new RootCommand();
@@ -71,6 +72,7 @@ namespace MSMConfigUtil.CLI
             Console.WriteLine("Press the <Enter> key to exit.");
             Console.ReadLine();
             */
+
         }
     }
 }

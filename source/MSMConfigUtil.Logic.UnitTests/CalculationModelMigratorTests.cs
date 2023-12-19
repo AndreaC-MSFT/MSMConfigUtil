@@ -11,6 +11,7 @@ namespace MSMConfigUtil.Logic.UnitTests
         private Mock<ICalculationModelReader> destinationCalculationModelReaderMock;
         private Mock<IModelDefinitionConverter> modelDefinitionConverterMock;
         private Mock<ICalculationModelWriter> calculationModelWriterMock;
+        private Mock<IUserInterfaceHandler> userInterfaceHandlerMock;
         private CalculationModelMigrator calculationModelMigrator;
 
         [SetUp]
@@ -20,12 +21,14 @@ namespace MSMConfigUtil.Logic.UnitTests
             destinationCalculationModelReaderMock = new Mock<ICalculationModelReader>();
             modelDefinitionConverterMock = new Mock<IModelDefinitionConverter>();
             calculationModelWriterMock = new Mock<ICalculationModelWriter>();
+            userInterfaceHandlerMock = new Mock<IUserInterfaceHandler>();
 
             calculationModelMigrator = new CalculationModelMigrator(
                 sourceCalculationModelReaderMock.Object,
                 destinationCalculationModelReaderMock.Object,
                 modelDefinitionConverterMock.Object,
-                calculationModelWriterMock.Object
+                calculationModelWriterMock.Object,
+                userInterfaceHandlerMock.Object
             );
         }
 

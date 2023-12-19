@@ -1,4 +1,5 @@
 using Moq;
+using MSMConfigUtil.Logic.Exceptions;
 using NUnit.Framework;
 using System.Collections.Generic;
 
@@ -51,7 +52,7 @@ namespace MSMConfigUtil.Logic.UnitTests
             destinationDataverseReaderMock.Setup(m => m.GetRowIdByKey(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(expectedDestinationId);
 
             // Act & Assert
-            Assert.Throws<InvalidOperationException>(() => idConverter.ConvertIdToDestinationEnvironment<string>(logicalTableName, sourceRowId, fieldToMatchInDestination));
+            Assert.Throws<SourceToDestinationIdConversionException>(() => idConverter.ConvertIdToDestinationEnvironment<string>(logicalTableName, sourceRowId, fieldToMatchInDestination));
         }
 
         [Test]
@@ -197,7 +198,7 @@ namespace MSMConfigUtil.Logic.UnitTests
             destinationDataverseReaderMock.Setup(m => m.GetRowIdByKey(It.IsAny<string>(), It.IsAny<IEnumerable<KeyValuePair<string, object>>>())).Returns(expectedDestinationId);
 
             // Act & Assert
-            Assert.Throws<InvalidOperationException>(() => idConverter.ConvertIdToDestinationEnvironment<string>(logicalTableName, sourceRowId, fieldToMatchInDestination, additionalFilterCriteria));
+            Assert.Throws<SourceToDestinationIdConversionException>(() => idConverter.ConvertIdToDestinationEnvironment<string>(logicalTableName, sourceRowId, fieldToMatchInDestination, additionalFilterCriteria));
         }
 
         [Test]

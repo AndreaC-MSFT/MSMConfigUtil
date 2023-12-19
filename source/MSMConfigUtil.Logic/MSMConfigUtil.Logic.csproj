@@ -6,6 +6,11 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+	    <DebugType>none</DebugType>
+	    <DebugSymbols>false</DebugSymbols>
+    </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.PowerPlatform.Dataverse.Client" Version="1.1.16" />
     <PackageReference Include="System.Security.Cryptography.Pkcs" Version="8.0.0" />

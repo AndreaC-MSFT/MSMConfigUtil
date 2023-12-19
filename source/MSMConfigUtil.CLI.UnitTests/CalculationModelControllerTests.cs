@@ -16,6 +16,7 @@ namespace MSMConfigUtil.CLI.Tests
     {
         private Mock<ICalculationModelMigratorFactory> calcModelMigratorFactoryMock;
         private Mock<ICalculationModelMigrator> calcModelMigratorMock;
+        private Mock<IUserInterfaceHandler> userInterfaceHandlerMock;
         private CalculationModelController calculationModelController;
 
         [SetUp]
@@ -23,7 +24,8 @@ namespace MSMConfigUtil.CLI.Tests
         {
             calcModelMigratorFactoryMock = new Mock<ICalculationModelMigratorFactory>();
             calcModelMigratorMock = new Mock<ICalculationModelMigrator>();
-            calculationModelController = new CalculationModelController(calcModelMigratorFactoryMock.Object);
+            userInterfaceHandlerMock = new Mock<IUserInterfaceHandler>();
+            calculationModelController = new CalculationModelController(calcModelMigratorFactoryMock.Object, userInterfaceHandlerMock.Object);
         }
 
         [Test]
@@ -66,7 +68,7 @@ namespace MSMConfigUtil.CLI.Tests
         }
 
         [Test]
-        public void MigrateCalculationModel_Should_CallCorrectMigrateOverload_When_MigrateAllIsFalseAndModelNameIsNotSpecified()
+        public void MigrateCalculationModel_Should_GenerateUIError_When_MigrateAllIsFalseAndModelNameIsNotSpecified()
         {
             // Arrange
             var globalOptions = new GlobalCLIOptions();
@@ -77,8 +79,11 @@ namespace MSMConfigUtil.CLI.Tests
             };
             calcModelMigratorFactoryMock.Setup(m => m.Create(globalOptions)).Returns(calcModelMigratorMock.Object);
 
-            // Act & Assert
-            Assert.Throws<ArgumentException>(() =>  calculationModelController.MigrateCalculationModel(globalOptions, migrateModelsOptions));
+            // Act
+            calculationModelController.MigrateCalculationModel(globalOptions, migrateModelsOptions);
+
+            // Assert
+            userInterfaceHandlerMock.Verify(m => m.ShowError(It.IsAny<string>()));
         }
 
     }

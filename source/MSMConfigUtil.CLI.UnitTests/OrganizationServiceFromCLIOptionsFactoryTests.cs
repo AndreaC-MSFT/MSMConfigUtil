@@ -2,6 +2,7 @@ using Microsoft.PowerPlatform.Dataverse.Client;
 using Microsoft.PowerPlatform.Dataverse.Client.Model;
 using Microsoft.Xrm.Sdk;
 using Moq;
+using MSMConfigUtil.Logic;
 using NUnit.Framework;
 using System;
 using System.Security;
@@ -12,12 +13,14 @@ namespace MSMConfigUtil.CLI.Tests
     {
         private OrganizationServiceFromCLIOptionsFactory factory;
         private Mock<IConnectionOptionsFactory> connectionOptionsFactoryMock;
+        private Mock<IUserInterfaceHandler> uiHandlerMock;
 
         [SetUp]
         public void Setup()
         {
             connectionOptionsFactoryMock = new Mock<IConnectionOptionsFactory>();
-            factory = new OrganizationServiceFromCLIOptionsFactory(connectionOptionsFactoryMock.Object);
+            uiHandlerMock = new Mock<IUserInterfaceHandler>();
+            factory = new OrganizationServiceFromCLIOptionsFactory(connectionOptionsFactoryMock.Object, uiHandlerMock.Object);
         }
 
         [Test]

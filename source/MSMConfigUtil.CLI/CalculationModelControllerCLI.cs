@@ -35,7 +35,7 @@ namespace MSMConfigUtil.CLI
             { IsRequired = true };
             rootCommand.AddGlobalOption(authTypeOption);
 
-            var clientIdOption = new Option<string?>("--client-id", "The OAuth client ID (or App registration Id). Only used whith --auth-type ClientIdAndSecret.");
+            var clientIdOption = new Option<string?>("--client-id", "The OAuth client ID (or App registration Id).");
             rootCommand.AddGlobalOption(clientIdOption);
 
             var clientSecretOption = new Option<SecureString?>("--client-secret", "The client secret. Only used whith --auth-type ClientIdAndSecret.");

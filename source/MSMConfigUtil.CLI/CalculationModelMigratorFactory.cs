@@ -1,4 +1,5 @@
-﻿using MSMConfigUtil.Logic;
+﻿using Microsoft.Extensions.Logging;
+using MSMConfigUtil.Logic;
 using MSMConfigUtil.Logic.CalculationModelMigration;
 using System;
 using System.Collections.Generic;
@@ -14,13 +15,15 @@ namespace MSMConfigUtil.CLI
         private readonly IRetrieveResponseReader retrieveResponseReader;
         private readonly INodeConverterCollectionFactory nodeConverterCollectionFactory;
         private readonly IModelDefinitionHelper modelDefinitionHelper;
+        private readonly IUserInterfaceHandler uiHandler;
 
-        public CalculationModelMigratorFactory(IOrganizationServiceFromCLIOptionsFactory organizationServiceFactory, IRetrieveResponseReader retrieveResponseReader, INodeConverterCollectionFactory nodeConverterCollectionFactory, IModelDefinitionHelper modelDefinitionHelper)
+        public CalculationModelMigratorFactory(IOrganizationServiceFromCLIOptionsFactory organizationServiceFactory, IRetrieveResponseReader retrieveResponseReader, INodeConverterCollectionFactory nodeConverterCollectionFactory, IModelDefinitionHelper modelDefinitionHelper, IUserInterfaceHandler uiHandler)
         {
             this.organizationServiceFactory = organizationServiceFactory;
             this.retrieveResponseReader = retrieveResponseReader;
             this.nodeConverterCollectionFactory = nodeConverterCollectionFactory;
             this.modelDefinitionHelper = modelDefinitionHelper;
+            this.uiHandler = uiHandler;
         }
 
         public ICalculationModelMigrator Create(GlobalCLIOptions globalOptions)
@@ -43,7 +46,7 @@ namespace MSMConfigUtil.CLI
 
             var calculationModelWriter = new CalculationModelWriter(destinationDataverseWriter);
 
-            return new CalculationModelMigrator(sourceCalculationModelReader, destinationCalculationModelReader, modelDefinitionConverter, calculationModelWriter);
+            return new CalculationModelMigrator(sourceCalculationModelReader, destinationCalculationModelReader, modelDefinitionConverter, calculationModelWriter, uiHandler);
         }
 
     }

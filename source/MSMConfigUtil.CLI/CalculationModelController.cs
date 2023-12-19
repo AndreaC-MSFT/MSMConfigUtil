@@ -1,4 +1,5 @@
-﻿using Microsoft.Xrm.Sdk;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Xrm.Sdk;
 using MSMConfigUtil.Logic;
 using System;
 using System.Collections.Generic;
@@ -12,9 +13,11 @@ namespace MSMConfigUtil.CLI
     public class CalculationModelController : ICalculationModelController
     {
         private readonly ICalculationModelMigratorFactory calcModelMigratorFactory;
-        public CalculationModelController(ICalculationModelMigratorFactory calcModelMigratorFactory)
+        private readonly IUserInterfaceHandler uiHandler;
+        public CalculationModelController(ICalculationModelMigratorFactory calcModelMigratorFactory, IUserInterfaceHandler uiHandler)
         {
             this.calcModelMigratorFactory = calcModelMigratorFactory;
+            this.uiHandler = uiHandler;
         }
         public void MigrateCalculationModel(GlobalCLIOptions globalOptions, MigrateModelsCLIOptions migrateModelsOptions)
         {
@@ -24,7 +27,7 @@ namespace MSMConfigUtil.CLI
             else
             {
                 if (string.IsNullOrEmpty(migrateModelsOptions.CalculationModelName))
-                    throw new ArgumentException("Please specify either --calculation-model-name or --all");
+                    uiHandler.ShowError("Please specify either --calculation-model-name or --all");
                 else
                     calcModelMigrator.Migrate(migrateModelsOptions.CalculationModelName, migrateModelsOptions.ReplaceExistingModels);
             }

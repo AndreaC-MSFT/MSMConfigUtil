@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MSMConfigUtil.Logic.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,7 +23,7 @@ namespace MSMConfigUtil.Logic
             var valueToMatch = sourceDataverseReader.GetRowValueById<TMatchingFieldType>(logicalTableName, sourceRowId, fieldToMatchInDestination);
             var destinationId = destinationDataverseReader.GetRowIdByKey(logicalTableName, fieldToMatchInDestination, valueToMatch);
             if (!destinationId.HasValue)
-                throw new InvalidOperationException($"Cannot find a matching value for {logicalTableName}.{fieldToMatchInDestination} = '{valueToMatch}' in the destination environment");
+                throw new SourceToDestinationIdConversionException(logicalTableName, fieldToMatchInDestination, valueToMatch);
             return destinationId.Value;
         }
 
@@ -36,15 +37,7 @@ namespace MSMConfigUtil.Logic
             destinationFilter.AddRange(additionalDestinationFilterCriteria);
             var destinationId = destinationDataverseReader.GetRowIdByKey(logicalTableName, destinationFilter);
             if (!destinationId.HasValue)
-            {
-                string formattedFilter = "(Filter Error)";
-                try
-                {
-                    formattedFilter = string.Join(" AND ", destinationFilter.Select(kv => $"{kv.Key} = {kv.Value}"));
-                }
-                catch { }
-                throw new InvalidOperationException($"Cannot find a matching value in destination environment for {logicalTableName} row with {formattedFilter}");
-            }
+                throw new SourceToDestinationIdConversionException(logicalTableName, destinationFilter);
             return destinationId.Value;
         }
     }
