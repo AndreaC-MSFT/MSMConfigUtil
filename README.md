@@ -3,7 +3,7 @@
 MSMConfigUtil is a command line utility that enables manual and automated transfer of Microsoft Sustainability Manager configuration items between environments.
 Currently, only Calculation Models are supported.
 Users can leverage MSMConfigUtil to manually copy one or all custom Calculation Models from one environment to another.
-MSMConfigUtil can also be integrated into deployment pipelines to automate promoting Calculation Models from dev/test environments to production.
+MSMConfigUtil can also be integrated into deployment pipelines to automate the promotion of Calculation Models from dev/test environments to production.
 
 ## Disclaimer
 This is not an official tool and it is not officially supported.
@@ -17,7 +17,7 @@ This is not an official tool and it is not officially supported.
     - Download [MSMConfigUtil-portable.zip](https://github.com/AndreaC-MSFT/MSMConfigUtil/releases/latest/download/MSMConfigUtil-portable.zip) 
 
 1. Unzip the content
-1. Open a terminal in the MSMConfigUtil directory and type
+1. Open a terminal in the MSMConfigUtil directory
 1. Type the following command to get guidance on available commands and options
 
     ```bash
@@ -40,7 +40,7 @@ Here is an example that copies all custom calculation models from `environment-A
 ```
 
 ## Authentication
-MSMConfigUtil supports **interactive oauth authentication** (the default) and **client secret authentication**.
+MSMConfigUtil supports **interactive OAuth authentication** (the default) and **client secret authentication**.
 
 ### Interactive authentication
 When interactive authentication is used, MSMConfigUtil opens two browser windows (one for the source environment and one for the destination one) so that user can authenticate using their Entra Id (formerly known as Azure Active Directory) credentials.
